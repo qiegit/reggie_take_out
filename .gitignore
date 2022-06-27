@@ -1,0 +1,33 @@
+# Created by .ignore support plugin (hsz.mobi)
+.git
+logs
+rebel.xml
+target/
+!.mvn/wrapper/maven.jar
+log.path_IS_UNDEFINED
+.DS_Store
+offline_user.md
+
+###STS###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### Intellij IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private
+build/
+nbbuild/
+dish/
+nbdish/
+.nb-gradle/
+generatorConfig.xml
+
