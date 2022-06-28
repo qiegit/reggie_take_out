@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author 郄
@@ -27,6 +29,9 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
     private UserService userService;
 
     @PostMapping("/sendMsg")
@@ -37,7 +42,9 @@ public class UserController {
         if (StringUtils.isNotEmpty(phone)){
             String code = ValidateCodeUtils.generateValidateCode4String(4).toString();
             log.info("==============手机验证码："+code);
-            session.setAttribute("code", code);
+            stringRedisTemplate.opsForValue().set(user.getPhone(),code );
+            stringRedisTemplate.expire(user.getPhone(), 5, TimeUnit.MINUTES);
+//            session.setAttribute("code", code);
             R.success("手机验证码发送成功");
         }
         return R.error("短信发送失败");
@@ -47,9 +54,11 @@ public class UserController {
     public R<User> login(@RequestBody Map map, HttpSession session){
         String phone =  String.valueOf(map.get("phone"));
         String pageCode =  String.valueOf(map.get("code"));
-        Object sessionCode = session.getAttribute("code");
+//        Object sessionCode = session.getAttribute("code");
+        String sessionCode = stringRedisTemplate.opsForValue().get(phone);
 
         if (sessionCode !=null &&sessionCode.equals(pageCode)){
+            stringRedisTemplate.delete(phone);
             LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
             userLambdaQueryWrapper.eq(User::getPhone,phone );
             User getUser = userService.getOne(userLambdaQueryWrapper);
