@@ -90,10 +90,7 @@ public class SermealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         List<SetmealDish> setmealDishes = setmealDto.getSetmealDishes();
         setmealDishes = setmealDishes.stream().map((item) ->{
 //            获取设置setmealid
-            LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            setmealLambdaQueryWrapper.eq(setmealDto.getCategoryId()!=null, Setmeal::getCategoryId, setmealDto.getCategoryId());
-            Setmeal setmeal = setmealService.getOne(setmealLambdaQueryWrapper);
-            item.setSetmealId(setmeal.getId());
+            item.setSetmealId(setmealDto.getId());
             return item;
         }).collect(Collectors.toList());
         setmealDishService.saveBatch(setmealDishes);

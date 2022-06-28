@@ -13,6 +13,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +33,9 @@ import java.util.stream.Collectors;
 public class SermealController {
 
     @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
     private SetmealService setmealService;
 
     @Autowired
@@ -38,6 +45,7 @@ public class SermealController {
     private SetmealDishService setmealDishService;
 
     @GetMapping("/list")
+    @Cacheable(value = "setmealCache",key = "#setmeal.categoryId +'_'+ #setmeal.status")
     public R<List<Setmeal>> list(Setmeal setmeal){
         Long categoryId = setmeal.getCategoryId();
         Integer status = setmeal.getStatus();
@@ -50,6 +58,8 @@ public class SermealController {
         return R.success(setmeals);
     }
 
+    //allEntries 删除全部
+    @CacheEvict(value = "setmealCache",allEntries = true)
     @DeleteMapping
     public R<String> delete(String ids){
         setmealService.deleteWithDish(ids);
@@ -69,6 +79,7 @@ public class SermealController {
         return R.success(setmealDto);
     }
     @PostMapping
+    @CacheEvict(value = "setmealCache",allEntries = true)
     public R<String> save(@RequestBody SetmealDto setmealDto){
         setmealService.saveWithDish(setmealDto);
         return R.success("保存成功");
