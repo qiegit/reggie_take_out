@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
  * 套餐
  */
 @Data
+@ApiModel("套餐")
 public class Setmeal implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,11 +27,11 @@ public class Setmeal implements Serializable {
     private Long categoryId;
 
 
-    //套餐名称
+    @ApiModelProperty("套餐名称")//套餐名称
     private String name;
 
 
-    //套餐价格
+    @ApiModelProperty("套餐价格")//套餐价格
     private BigDecimal price;
 
 

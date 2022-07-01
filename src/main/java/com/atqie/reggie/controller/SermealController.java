@@ -10,6 +10,10 @@ import com.atqie.reggie.service.SetmealDishService;
 import com.atqie.reggie.service.SetmealService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequestMapping("/setmeal")
+@Api(tags = "套餐接口")
 public class SermealController {
 
     @Autowired
@@ -59,6 +64,7 @@ public class SermealController {
     }
 
     //allEntries 删除全部
+    @ApiOperation(value = "删除套餐接口")
     @CacheEvict(value = "setmealCache",allEntries = true)
     @DeleteMapping
     public R<String> delete(String ids){
@@ -67,6 +73,7 @@ public class SermealController {
     }
 
     @PutMapping
+    @ApiOperation(value = "更新套餐接口")
     public R<String> update(@RequestBody SetmealDto setmealDto){
         setmealService.updateWithDish(setmealDto);
         return R.success("修改成功");
@@ -80,12 +87,19 @@ public class SermealController {
     }
     @PostMapping
     @CacheEvict(value = "setmealCache",allEntries = true)
+    @ApiOperation(value = "保存套餐接口")
     public R<String> save(@RequestBody SetmealDto setmealDto){
         setmealService.saveWithDish(setmealDto);
         return R.success("保存成功");
     }
 
     @GetMapping("/page")
+    @ApiOperation(value = "套餐分页接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page",value = "页码",required = true),
+            @ApiImplicitParam(name = "pageSize",value = "每页记录数",required = true),
+            @ApiImplicitParam(name = "name",value = "套餐名称",required = true)
+    })
     public R<Page<SetmealDto>> page(int page,int pageSize,String name){
 //        查询setmeal 的page
         Page<Setmeal> setmealPage = new Page(page,pageSize);

@@ -1,5 +1,7 @@
 package com.atqie.reggie.common;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,11 +14,18 @@ import java.util.Map;
  * @Description:
  */
 @Data
+@ApiModel("返回结果")
 public class R<T> implements Serializable {
 
+    @ApiModelProperty("编码")
     private Integer code;       //编码：成功1，错误0以及其他
+
+    @ApiModelProperty("错误信息")
     private String msg;            //错误信息
+
+    @ApiModelProperty("返回数据")
     private T data;                //数据
+
     private Map map = new HashMap();    //动态数据
 
 //    修饰符 <代表泛型的变量> 返回值类型 方法名(参数){ }
